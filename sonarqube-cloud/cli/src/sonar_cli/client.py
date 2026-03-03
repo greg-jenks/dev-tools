@@ -131,7 +131,7 @@ class SonarCloudClient:
         severity: str | None = None,
         issue_type: str | None = None,
     ) -> list[dict[str, Any]]:
-        params: dict[str, Any] = {"organization": self.settings.org, "components": project}
+        params: dict[str, Any] = {"organization": self.settings.org, "componentKeys": project}
         if branch:
             params["branch"] = branch
         if pr:
