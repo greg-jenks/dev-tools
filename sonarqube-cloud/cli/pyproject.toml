@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sonar-cli"
+version = "0.1.0"
+description = "SonarCloud CLI for pre-PR quality checking"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "typer[all]",
+  "httpx",
+  "rich",
+  "markdownify",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "respx"]
+
+[project.scripts]
+sonar = "sonar_cli.main:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
