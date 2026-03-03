@@ -123,6 +123,8 @@ class SonarCloudClient:
         project: str,
         branch: str | None = None,
         pr: str | None = None,
+        files: str | None = None,
+        statuses: str | None = None,
         since_leak_period: bool = False,
         impact: str | None = None,
         quality: str | None = None,
@@ -134,6 +136,10 @@ class SonarCloudClient:
             params["branch"] = branch
         if pr:
             params["pullRequest"] = pr
+        if files:
+            params["files"] = files
+        if statuses:
+            params["statuses"] = statuses
         if since_leak_period:
             params["sinceLeakPeriod"] = "true"
         if impact:

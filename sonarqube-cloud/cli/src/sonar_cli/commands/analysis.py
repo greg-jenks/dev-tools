@@ -45,8 +45,7 @@ def analysis_status(
     output: OutputFormat = typer.Option(OutputFormat.table, "--output"),
 ) -> None:
     settings = get_settings()
-    client = SonarCloudClient(settings)
-    try:
+    with SonarCloudClient(settings) as client:
         if not wait:
             result = client.ce_activity(project, branch=branch)
             status = _status_from_activity(result)
@@ -59,8 +58,6 @@ def analysis_status(
                 else:
                     Console().print("Status: TIMEOUT")
                 raise typer.Exit(code=2)
-    finally:
-        client.close()
     if output == OutputFormat.json:
         typer.echo(json.dumps(payload, indent=2))
     else:

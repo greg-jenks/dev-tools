@@ -119,3 +119,25 @@ def test_error_mapping_raises_sonar_error():
     with pytest.raises(SonarCloudError, match="invalid project"):
         client.search_components()
     client.close()
+
+
+def test_search_issues_supports_files_and_statuses_filters():
+    captured = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["files"] = request.url.params.get("files")
+        captured["statuses"] = request.url.params.get("statuses")
+        return httpx.Response(200, json={"issues": [], "paging": {"total": 0}})
+
+    transport = httpx.MockTransport(handler)
+    client = SonarCloudClient(
+        Settings(token="t", org="o", base_url="https://sonarcloud.io/api"),
+        http_client=httpx.Client(transport=transport, base_url="https://sonarcloud.io/api"),
+        sleeper=lambda sec: None,
+    )
+    try:
+        client.search_issues("proj", files="src/a.py,src/b.py", statuses="OPEN,CONFIRMED")
+    finally:
+        client.close()
+    assert captured["files"] == "src/a.py,src/b.py"
+    assert captured["statuses"] == "OPEN,CONFIRMED"

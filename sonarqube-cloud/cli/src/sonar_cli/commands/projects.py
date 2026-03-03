@@ -13,11 +13,8 @@ from sonar_cli.formatting import format_projects_table
 
 def projects(output: OutputFormat = typer.Option(OutputFormat.table, "--output")) -> None:
     settings = get_settings()
-    client = SonarCloudClient(settings)
-    try:
+    with SonarCloudClient(settings) as client:
         result = client.search_components()
-    finally:
-        client.close()
     if output == OutputFormat.json:
         typer.echo(json.dumps(result, indent=2))
         return

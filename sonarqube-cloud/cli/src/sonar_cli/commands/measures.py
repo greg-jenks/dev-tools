@@ -33,11 +33,8 @@ def measures(
     output: OutputFormat = typer.Option(OutputFormat.table, "--output"),
 ) -> None:
     settings = get_settings()
-    client = SonarCloudClient(settings)
-    try:
+    with SonarCloudClient(settings) as client:
         result = client.component_measures(project, metrics=metrics, branch=branch)
-    finally:
-        client.close()
     if output == OutputFormat.json:
         typer.echo(json.dumps(result, indent=2))
         return

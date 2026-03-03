@@ -20,8 +20,7 @@ def rules_list(
     output: OutputFormat = typer.Option(OutputFormat.table, "--output"),
 ) -> None:
     settings = get_settings()
-    client = SonarCloudClient(settings)
-    try:
+    with SonarCloudClient(settings) as client:
         profiles = client.search_quality_profiles(project)
         profile_keys = [p.get("key") for p in profiles if p.get("key")]
         rules: list[dict] = []
@@ -32,8 +31,6 @@ def rules_list(
                 if rule_key and rule_key not in seen:
                     seen.add(rule_key)
                     rules.append(rule)
-    finally:
-        client.close()
     if output == OutputFormat.json:
         typer.echo(json.dumps(rules, indent=2))
         return
@@ -43,11 +40,8 @@ def rules_list(
 @app.command("show")
 def rules_show(rule_key: str, output: OutputFormat = typer.Option(OutputFormat.table, "--output")) -> None:
     settings = get_settings()
-    client = SonarCloudClient(settings)
-    try:
+    with SonarCloudClient(settings) as client:
         result = client.show_rule(rule_key)
-    finally:
-        client.close()
     if output == OutputFormat.json:
         typer.echo(json.dumps(result, indent=2))
         return

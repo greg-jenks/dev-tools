@@ -16,6 +16,12 @@ class DummyClient:
     def close(self):
         return None
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        self.close()
+
     def search_components(self):
         return [{"key": "proj", "name": "Project"}]
 

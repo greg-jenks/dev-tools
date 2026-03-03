@@ -28,7 +28,8 @@ Known project keys: `survey-management-api`, `survey-management-web`, `survey-fi
 6. If status is `SUCCESS`, run `sonar quality-gate <project-key> --branch <branch> --output json`.
 7. If gate fails, run `sonar issues <project-key> --branch <branch> --new --output json`.
 8. Group issues by rule and run `sonar rules show <rule-key> --output json` for each.
-9. Fix code, commit, push, and re-check analysis + gate.
+9. Fix code, commit, and push.
+10. Loop back to step 3 after each push and repeat until analysis is `SUCCESS` and quality gate is passing.
 
 ## Workflow 3: Fix mode
 

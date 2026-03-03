@@ -18,11 +18,8 @@ def quality_gate(
     output: OutputFormat = typer.Option(OutputFormat.table, "--output"),
 ) -> None:
     settings = get_settings()
-    client = SonarCloudClient(settings)
-    try:
+    with SonarCloudClient(settings) as client:
         result = client.project_quality_gate_status(project, branch=branch, pr=pr)
-    finally:
-        client.close()
     if output == OutputFormat.json:
         typer.echo(json.dumps(result, indent=2))
     else:

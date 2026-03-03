@@ -45,6 +45,8 @@ List issues.
 Flags:
 - `--branch <branch>`
 - `--pr <number>`
+- `--files <path1,path2>`
+- `--status <OPEN,CONFIRMED,...>`
 - `--new`
 - `--impact [HIGH|MEDIUM|LOW]`
 - `--quality [RELIABILITY|SECURITY|MAINTAINABILITY]`
