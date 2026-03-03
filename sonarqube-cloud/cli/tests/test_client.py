@@ -86,15 +86,20 @@ def test_pagination_collects_all_pages():
     assert [i["key"] for i in issues] == ["1", "2"]
 
 
-def test_auth_header_set_correctly():
+def test_auth_header_set_correctly_without_custom_http_client(monkeypatch):
     def handler(request: httpx.Request) -> httpx.Response:
         assert request.headers["Authorization"] == "Bearer secret"
         return httpx.Response(200, json={"components": [], "paging": {"total": 0}})
 
     transport = httpx.MockTransport(handler)
+    real_client = httpx.Client
+
+    def client_factory(*args, **kwargs):
+        kwargs["transport"] = transport
+        return real_client(*args, **kwargs)
+    monkeypatch.setattr(httpx, "Client", client_factory)
     client = SonarCloudClient(
         Settings(token="secret", org="o", base_url="https://sonarcloud.io/api"),
-        http_client=httpx.Client(transport=transport, base_url="https://sonarcloud.io/api", headers={"Authorization": "Bearer secret"}),
         sleeper=lambda sec: None,
     )
     client.search_components()

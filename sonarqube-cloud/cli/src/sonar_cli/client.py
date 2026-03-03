@@ -36,6 +36,12 @@ class SonarCloudClient:
     def close(self) -> None:
         self._client.close()
 
+    def __enter__(self) -> "SonarCloudClient":
+        return self
+
+    def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> None:
+        self.close()
+
     def _extract_error_message(self, response: httpx.Response) -> str:
         try:
             data = response.json()
@@ -55,6 +61,7 @@ class SonarCloudClient:
     def _request(self, method: str, path: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
         retries = [1, 2, 4]
         request_params = params or {}
+        response: httpx.Response | None = None
         for attempt in range(len(retries) + 1):
             response = self._client.request(method, path, params=request_params)
             if response.status_code not in (429, 503):
@@ -64,6 +71,7 @@ class SonarCloudClient:
             delay = retries[attempt]
             print(f"Retrying {path} after HTTP {response.status_code} in {delay}s...", file=sys.stderr)
             self._sleeper(delay)
+        assert response is not None
         if response.status_code >= 400:
             raise SonarCloudError(response.status_code, self._extract_error_message(response))
         return response.json()

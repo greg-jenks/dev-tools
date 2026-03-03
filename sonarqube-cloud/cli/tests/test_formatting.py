@@ -2,6 +2,7 @@ from rich.console import Console
 
 from sonar_cli.formatting import (
     _html_to_markdown,
+    format_analysis_status,
     format_issues_table,
     format_quality_gate,
     format_rules_table,
@@ -56,3 +57,11 @@ def test_quality_gate_passed_failed_formatting():
 def test_rating_translation():
     assert rating_to_letter("1.0") == "A"
     assert rating_to_letter("2.0") == "B"
+
+
+def test_analysis_status_uses_string_branch():
+    table = format_analysis_status(
+        {"tasks": [{"status": "SUCCESS", "submittedAt": "2026-03-03", "executionTimeMs": 42, "branch": "feature/x"}]}
+    )
+    text = _render_text(table)
+    assert "feature/x" in text

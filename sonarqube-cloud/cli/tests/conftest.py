@@ -50,4 +50,8 @@ def sample_measures():
 
 @pytest.fixture
 def sample_ce_activity():
-    return {"tasks": [{"status": "SUCCESS", "submittedAt": "2026-03-03T00:00:00+0000", "executionTimeMs": 1234}]}
+    return {
+        "tasks": [
+            {"status": "SUCCESS", "submittedAt": "2026-03-03T00:00:00+0000", "executionTimeMs": 1234, "branch": "main"}
+        ]
+    }

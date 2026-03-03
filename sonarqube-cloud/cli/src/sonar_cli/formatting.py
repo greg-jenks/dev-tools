@@ -159,7 +159,7 @@ def format_analysis_status(data: dict) -> Table:
         status = str(latest.get("status", "NO_ANALYSIS"))
         submitted = str(latest.get("submittedAt", ""))
         duration = str(latest.get("executionTimeMs", ""))
-        branch = str((latest.get("branch") or {}).get("name", ""))
+        branch = str(latest.get("branch") or latest.get("branchType") or "")
     table = Table(title="Analysis Status", box=box.SIMPLE_HEAVY)
     table.add_column("Status")
     table.add_column("Submitted")
